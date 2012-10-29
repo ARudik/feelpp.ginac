@@ -70,7 +70,7 @@ macro(add_ginac_test thename)
 	endif()
 	add_executable(${thename} EXCLUDE_FROM_ALL ${${thename}_sources})
 	target_link_libraries(${thename} ginac)
-	add_dependencies(check ${thename})
+	add_dependencies(check-ginac ${thename})
 	add_test(NAME ${thename} COMMAND ${thename}${CMAKE_EXECUTABLE_SUFFIX})
 endmacro()
 

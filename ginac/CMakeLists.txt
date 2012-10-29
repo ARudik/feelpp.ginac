@@ -74,7 +74,7 @@ set(ginaclib_public_headers
     ex.h
     excompiler.h
     expair.h
-    expairseq.h 
+    expairseq.h
     exprseq.h
     fail.h
     factor.h
@@ -83,7 +83,7 @@ set(ginaclib_public_headers
     ${CMAKE_CURRENT_BINARY_DIR}/function.h
     hash_map.h
     idx.h
-    indexed.h 
+    indexed.h
     inifcns.h
     integral.h
     lst.h
@@ -92,20 +92,20 @@ set(ginaclib_public_headers
     ncmul.h
     normal.h
     numeric.h
-    operators.h 
+    operators.h
     power.h
     print.h
     pseries.h
     ptr.h
     registrar.h
     relational.h
-    structure.h 
+    structure.h
     symbol.h
     symmetry.h
     tensor.h
     version.h
-    wildcard.h 
-    parser/parser.h 
+    wildcard.h
+    parser/parser.h
     parser/parse_context.h
 )
 
@@ -149,8 +149,8 @@ add_library(ginac ${ginaclib_sources})
 set_target_properties(ginac PROPERTIES
 	SOVERSION ${ginaclib_soversion}
 	VERSION ${ginaclib_version})
-target_link_libraries(ginac ${CLN_LIBRARIES})
-include_directories(${CMAKE_SOURCE_DIR}/ginac)
+target_link_libraries(ginac ${CLN_LIBRARIES} ${CMAKE_DL_LIBS})
+include_directories(${CMAKE_SOURCE_DIR}/contrib/ginac/ginac)
 
 if (NOT BUILD_SHARED_LIBS)
 	set_target_properties(ginac PROPERTIES OUTPUT_NAME "ginac")

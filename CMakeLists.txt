@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 2.6)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 project(GiNaC)
-file(STRINGS ${CMAKE_SOURCE_DIR}/ginac/version.h _ginac_vinfo REGEX "^#define[\t ]+GINACLIB_.*_VERSION.*")
+file(STRINGS ${CMAKE_SOURCE_DIR}/contrib/ginac/ginac/version.h _ginac_vinfo REGEX "^#define[\t ]+GINACLIB_.*_VERSION.*")
 string(REGEX REPLACE "^.*GINACLIB_MAJOR_VERSION[ \t]+([0-9]+).*" "\\1" GINAC_MAJOR_VERSION "${_ginac_vinfo}")
 string(REGEX REPLACE "^.*GINACLIB_MINOR_VERSION[ \t]+([0-9]+).*" "\\1" GINAC_MINOR_VERSION "${_ginac_vinfo}")
 string(REGEX REPLACE "^.*GINACLIB_MICRO_VERSION[ \t]+([0-9]+).*" "\\1" GINAC_MICRO_VERSION "${_ginac_vinfo}")
 set(GINAC_VERSION "${GINAC_MAJOR_VERSION}.${GINAC_MINOR_VERSION}.${GINAC_MICRO_VERSION}")
 
 # Library versioning info
-file(STRINGS ${CMAKE_SOURCE_DIR}/ginac/version.h _ginac_vinfo REGEX "^#define[\t ]+GINAC_LT_.*")
+file(STRINGS ${CMAKE_SOURCE_DIR}/contrib/ginac/ginac/version.h _ginac_vinfo REGEX "^#define[\t ]+GINAC_LT_.*")
 string(REGEX REPLACE "^.*GINAC_LT_CURRENT[ \t]+([0-9]+).*" "\\1" ginac_lt_current "${_ginac_vinfo}")
 string(REGEX REPLACE "^.*GINAC_LT_AGE[ \t]+([0-9]+).*" "\\1" ginac_lt_age "${_ginac_vinfo}")
 string(REGEX REPLACE "^.*GINAC_LT_REVISION[ \t]+([0-9]+).*" "\\1" ginac_lt_revision "${_ginac_vinfo}")
@@ -19,11 +19,11 @@ set(ginaclib_version ${ginaclib_soversion}.${ginac_lt_age}.${ginac_lt_revision})
 
 # make check
 enable_testing()
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
+add_custom_target(check-ginac COMMAND ${CMAKE_CTEST_COMMAND})
 # make info
-add_custom_target(info ALL)
-add_custom_target(html)
-add_custom_target(pdf)
+#add_custom_target(info ALL)
+#add_custom_target(html)
+#add_custom_target(pdf)
 
 find_package(CLN 1.2.2 REQUIRED)
 include_directories(${CLN_INCLUDE_DIR})
@@ -109,7 +109,7 @@ if (NOT CMAKE_SKIP_RPATH)
 	endif()
 endif()
 
-configure_file(${CMAKE_SOURCE_DIR}/ginac.pc.cmake ${CMAKE_BINARY_DIR}/ginac.pc @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/contrib/ginac/ginac.pc.cmake ${CMAKE_BINARY_DIR}/ginac.pc @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/ginac.pc DESTINATION "${LIB_INSTALL_DIR}/pkgconfig")
 
 # rpath for libginac.so itself, ginsh, and friends
@@ -171,7 +171,7 @@ add_subdirectory(check)
 if (BISON_FOUND AND FLEX_FOUND)
 	add_subdirectory(ginsh)
 endif()
-if (MAKEINFO)
-	add_subdirectory(doc)
-endif()
+#if (MAKEINFO)
+#	add_subdirectory(doc)
+#endif()
 
