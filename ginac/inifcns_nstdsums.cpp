@@ -29,7 +29,7 @@
  *      for Li, zeta and S must be positive integers. If you want to have an alternating Euler sum, you have
  *      to give the signs of the parameters as a second argument s to zeta(m,s) containing 1 and -1.
  *
- *    - The calculation of classical polylogarithms is speeded up by using Bernoulli numbers and 
+ *    - The calculation of classical polylogarithms is speeded up by using Bernoulli numbers and
  *      look-up tables. S uses look-up tables as well. The zeta function applies the algorithms in
  *      [Cra] and [BBB] for speed up. Multiple polylogarithms use Hoelder convolution [BBB].
  *
@@ -141,7 +141,7 @@ void fill_Xn(int n)
 			}
 			result = result - cln::binomial(i,i-1) * Xn[n-1][i-2] / 2 / i; // k == i-1
 			result = result + Xn[n-1][i-1] / (i+1); // k == i
-			
+
 			*it = result;
 			it++;
 		}
@@ -338,7 +338,7 @@ cln::cl_N Li_projection(int n, const cln::cl_N& x, const cln::float_format_t& pr
 			// depends on hardware, Digits, ... so an approx value is okay.
 			// it solves also the problem with precision due to the u=-log(1-x) transformation
 			if (cln::abs(cln::realpart(x)) < 0.25) {
-				
+
 				return Li2_do_sum(x);
 			} else {
 				return Li2_do_sum_Xn(x);
@@ -414,7 +414,7 @@ const cln::cl_N Lin_numeric(const int n, const cln::cl_N& x)
 		prec = cln::float_format(cln::the<cln::cl_F>(cln::realpart(value)));
 	else if (!instanceof(imagpart(x), cln::cl_RA_ring))
 		prec = cln::float_format(cln::the<cln::cl_F>(cln::imagpart(value)));
-	
+
 	// [Kol] (5.15)
 	if (cln::abs(value) > 1) {
 		cln::cl_N result = -cln::expt(cln::log(-value),n) / cln::factorial(n);
@@ -577,7 +577,7 @@ ex G_eval(const Gparameter& a, int scale, const exvector& gsyms)
 			it2 = it;
 			++it2;
 			for (; it2 != short_a.end(); ++it2) {
-				newa.push_back(*it2);	
+				newa.push_back(*it2);
 			}
 			result -= G_eval(newa, scale, gsyms);
 		}
@@ -744,12 +744,12 @@ ex depth_one_trafo_G(const Gparameter& pending_integrals, const Gparameter& a, i
 				                   pending_integrals.front(),
 						   gsyms);
 		}
-		
+
 		// G(y2_{-+}; sr)
 		result += trailing_zeros_G(convert_pending_integrals_G(new_pending_integrals),
 			                   new_pending_integrals.front(),
 					   gsyms);
-		
+
 		// G(0; sr)
 		new_pending_integrals.back() = 0;
 		result -= trailing_zeros_G(convert_pending_integrals_G(new_pending_integrals),
@@ -770,13 +770,13 @@ ex depth_one_trafo_G(const Gparameter& pending_integrals, const Gparameter& a, i
 			                   pending_integrals.front(),
 					   gsyms);
 	}
-	
+
 	// term int_0^sr dt/t G_{m-1}( (1/y2)_{+-}; 1/t )
 	//    = int_0^sr dt/t G_{m-1}( t_{+-}; y2 )
 	Gparameter new_a(a.begin()+1, a.end());
 	new_pending_integrals.push_back(0);
 	result -= depth_one_trafo_G(new_pending_integrals, new_a, scale, gsyms);
-	
+
 	// term int_0^y2 dt/t G_{m-1}( (1/y2)_{+-}; 1/t )
 	//    = int_0^y2 dt/t G_{m-1}( t_{+-}; y2 )
 	Gparameter new_pending_integrals_2;
@@ -818,7 +818,7 @@ ex G_transform(const Gparameter& pendint, const Gparameter& a, int scale,
 	bool convergent;
 	int depth, trailing_zeros;
 	Gparameter::const_iterator min_it;
-	Gparameter::const_iterator firstzero = 
+	Gparameter::const_iterator firstzero =
 		check_parameter_G(a, scale, convergent, depth, trailing_zeros, min_it);
 	int min_it_pos = min_it - a.begin();
 
@@ -835,7 +835,7 @@ ex G_transform(const Gparameter& pendint, const Gparameter& a, int scale,
 		  result *= trailing_zeros_G(convert_pending_integrals_G(pendint),
 			                     pendint.front(),
 					     gsyms);
-		} 
+		}
 		return result;
 	}
 
@@ -943,7 +943,7 @@ ex G_transform(const Gparameter& pendint, const Gparameter& a, int scale,
 // for the one that is equal to a_old
 ex shuffle_G(const Gparameter & a0, const Gparameter & a1, const Gparameter & a2,
 	     const Gparameter& pendint, const Gparameter& a_old, int scale,
-	     const exvector& gsyms) 
+	     const exvector& gsyms)
 {
 	if (a1.size()==0 && a2.size()==0) {
 		// veto the one configuration we don't want
@@ -1117,7 +1117,7 @@ G_do_trafo(const std::vector<cln::cl_N>& x, const std::vector<int>& s,
 	result = result.subs(subslst).evalf();
 	if (!is_a<numeric>(result))
 		throw std::logic_error("G_do_trafo: G_transform returned non-numeric result");
-	
+
 	cln::cl_N ret = ex_to<numeric>(result).to_cl_N();
 	return ret;
 }
@@ -1149,11 +1149,11 @@ G_numeric(const std::vector<cln::cl_N>& x, const std::vector<int>& s,
 
 	if (depth == 1 && x.size() == 2 && !need_trafo)
 		return - Li_projection(2, y/x[1], cln::float_format(Digits));
-	
+
 	// do acceleration transformation (hoelder convolution [BBB])
 	if (need_hoelder)
 		return G_do_hoelder(x, s, y);
-	
+
 	// convergence transformation
 	if (need_trafo)
 		return G_do_trafo(x, s, y);
@@ -1615,7 +1615,7 @@ static ex Li_series(const ex& m, const ex& x, const relational& rel, int order, 
 		seq.push_back(expair(Li(m, x), 0));
 		return pseries(rel, seq);
 	}
-	
+
 	// classical polylog
 	const ex x_pt = x.subs(rel, subs_options::no_pattern);
 	if (m.info(info_flags::numeric) && x_pt.info(info_flags::numeric)) {
@@ -1712,7 +1712,7 @@ REGISTER_FUNCTION(Li,
                   series_func(Li_series).
                   derivative_func(Li_deriv).
                   print_func<print_latex>(Li_print_latex).
-                  do_not_evalf_params());
+                  do_not_evalf_params())
 
 
 //////////////////////////////////////////////////////////////////////
@@ -1779,7 +1779,7 @@ void fill_Yn(int n, const cln::float_format_t& prec)
 }
 
 
-// make Yn longer ... 
+// make Yn longer ...
 void make_Yn_longer(int newsize, const cln::float_format_t& prec)
 {
 
@@ -1805,7 +1805,7 @@ void make_Yn_longer(int newsize, const cln::float_format_t& prec)
 			itprev++;
 		}
 	}
-	
+
 	ynlength = newsize;
 }
 
@@ -1923,7 +1923,7 @@ cln::cl_N S_do_sum(int n, int p, const cln::cl_N& x, const cln::float_format_t& 
 		ynlength = 100;
 		oldprec = prec;
 	}
-		
+
 	// check if precalculated values are sufficient
 	if (p > ynsize+1) {
 		for (int i=ynsize; i<p-1; i++) {
@@ -1951,7 +1951,7 @@ cln::cl_N S_do_sum(int n, int p, const cln::cl_N& x, const cln::float_format_t& 
 		factor = factor * xf;
 		i++;
 	} while (res != resbuf);
-	
+
 	return res;
 }
 
@@ -1976,7 +1976,7 @@ cln::cl_N S_projection(int n, int p, const cln::cl_N& x, const cln::float_format
 
 		return result;
 	}
-	
+
 	return S_do_sum(n, p, x, prec);
 }
 
@@ -2041,11 +2041,11 @@ const cln::cl_N S_num(int n, int p, const cln::cl_N& x)
 		}
 
 		return result;
-		
+
 	}
 	// [Kol] (5.12)
 	if (cln::abs(value) > 1) {
-		
+
 		cln::cl_N result;
 
 		for (int s=0; s<p; s++) {
@@ -2165,7 +2165,7 @@ static ex S_series(const ex& n, const ex& p, const ex& x, const relational& rel,
 					subsum[i] = subsum[i-1] + numeric(1, i) * presubsum[i-1];
 				}
 			}
-				
+
 			for (int i=1; i<order; ++i) {
 				ser += pow(s,i) / pow(numeric(i), n+1) * subsum[i-1];
 			}
@@ -2218,7 +2218,7 @@ REGISTER_FUNCTION(S,
                   series_func(S_series).
                   derivative_func(S_deriv).
                   print_func<print_latex>(S_print_latex).
-                  do_not_evalf_params());
+                  do_not_evalf_params())
 
 
 //////////////////////////////////////////////////////////////////////
@@ -2233,7 +2233,7 @@ REGISTER_FUNCTION(S,
 // anonymous namespace for helper functions
 namespace {
 
-	
+
 // regulates the pole (used by 1/x-transformation)
 symbol H_polesign("IMSIGN");
 
@@ -2260,7 +2260,7 @@ bool convert_parameter_H_to_Li(const lst& l, lst& m, lst& s, ex& pf)
 			mexp.append(*it);
 		}
 	}
-	
+
 	ex signum = 1;
 	pf = 1;
 	bool has_negative_parameters = false;
@@ -2292,7 +2292,7 @@ bool convert_parameter_H_to_Li(const lst& l, lst& m, lst& s, ex& pf)
 			}
 		}
 	}
-	
+
 	return has_negative_parameters;
 }
 
@@ -2388,12 +2388,12 @@ struct map_trafo_H_reduce_trailing_zeros : public map_function
 				}
 				ex arg = e.op(1);
 				if (parameter.op(parameter.nops()-1) == 0) {
-					
+
 					//
 					if (parameter.nops() == 1) {
 						return log(arg);
 					}
-					
+
 					//
 					lst::const_iterator it = parameter.begin();
 					while ((it != parameter.end()) && (*it == 0)) {
@@ -2402,14 +2402,14 @@ struct map_trafo_H_reduce_trailing_zeros : public map_function
 					if (it == parameter.end()) {
 						return pow(log(arg),parameter.nops()) / factorial(parameter.nops());
 					}
-					
+
 					//
 					parameter.remove_last();
 					std::size_t lastentry = parameter.nops();
 					while ((lastentry > 0) && (parameter[lastentry-1] == 0)) {
 						lastentry--;
 					}
-					
+
 					//
 					ex result = log(arg) * H(parameter,arg).hold();
 					ex acc = 0;
@@ -2428,7 +2428,7 @@ struct map_trafo_H_reduce_trailing_zeros : public map_function
 							acc++;
 						}
 					}
-					
+
 					if (lastentry < parameter.nops()) {
 						result = result / (parameter.nops()-lastentry+1);
 						return result.map(*this);
@@ -2601,7 +2601,7 @@ ex trafo_H_1tx_prepend_zero(const ex& e, const ex& arg)
 		ex addzeta = convert_H_to_zeta(newparameter);
 		return e.subs(h == (addzeta-H(newparameter, h.op(1)).hold())).expand();
 	} else {
-		return e * (-H(lst(0),1/arg).hold());
+		return e * (-H(lst(ex(0)),1/arg).hold());
 	}
 }
 
@@ -2740,7 +2740,7 @@ struct map_trafo_H_1mx : public map_function
 		if (is_a<add>(e) || is_a<mul>(e)) {
 			return e.map(*this);
 		}
-		
+
 		if (is_a<function>(e)) {
 			std::string name = ex_to<function>(e).get_name();
 			if (name == "H") {
@@ -2870,7 +2870,7 @@ struct map_trafo_H_1overx : public map_function
 					}
 					if (allthesame) {
 						map_trafo_H_mult unify;
-						return unify((pow(H(lst(-1),1/arg).hold() - H(lst(0),1/arg).hold(), parameter.nops())
+						return unify((pow(H(lst(ex(-1)),1/arg).hold() - H(lst(ex(0)),1/arg).hold(), parameter.nops())
 						       / factorial(parameter.nops())).expand());
 					}
 				} else {
@@ -2882,7 +2882,7 @@ struct map_trafo_H_1overx : public map_function
 					}
 					if (allthesame) {
 						map_trafo_H_mult unify;
-						return unify((pow(H(lst(1),1/arg).hold() + H(lst(0),1/arg).hold() + H_polesign, parameter.nops())
+						return unify((pow(H(lst(ex(1)),1/arg).hold() + H(lst(ex(0)),1/arg).hold() + H_polesign, parameter.nops())
 						       / factorial(parameter.nops())).expand());
 					}
 				}
@@ -2891,7 +2891,7 @@ struct map_trafo_H_1overx : public map_function
 				newparameter.remove_first();
 
 				if (parameter.op(0) == 0) {
-					
+
 					// leading zero
 					ex res = convert_H_to_zeta(parameter);
 					map_trafo_H_1overx recursion;
@@ -3005,7 +3005,7 @@ struct map_trafo_H_1mxt1px : public map_function
 					}
 					if (allthesame) {
 						map_trafo_H_mult unify;
-						return unify((pow(-log(2) - H(lst(0),(1-arg)/(1+arg)).hold() + H(lst(-1),(1-arg)/(1+arg)).hold(), parameter.nops())
+						return unify((pow(-log(2) - H(lst(ex(0)),(1-arg)/(1+arg)).hold() + H(lst(-1),(1-arg)/(1+arg)).hold(), parameter.nops())
 						       / factorial(parameter.nops())).expand());
 					}
 				}
@@ -3118,7 +3118,7 @@ cln::cl_N H_do_sum(const std::vector<int>& m, const cln::cl_N& x)
 static ex H_evalf(const ex& x1, const ex& x2)
 {
 	if (is_a<lst>(x1)) {
-		
+
 		cln::cl_N x;
 		if (is_a<numeric>(x2)) {
 			x = ex_to<numeric>(x2).to_cl_N();
@@ -3174,7 +3174,7 @@ static ex H_evalf(const ex& x1, const ex& x2)
 				// negative parameters -> s_lst is filled
 				std::vector<int> m_int;
 				std::vector<cln::cl_N> x_cln;
-				for (lst::const_iterator it_int = m_lst.begin(), it_cln = s_lst.begin(); 
+				for (lst::const_iterator it_int = m_lst.begin(), it_cln = s_lst.begin();
 				     it_int != m_lst.end(); it_int++, it_cln++) {
 					m_int.push_back(ex_to<numeric>(*it_int).to_int());
 					x_cln.push_back(ex_to<numeric>(*it_cln).to_cl_N());
@@ -3196,8 +3196,8 @@ static ex H_evalf(const ex& x1, const ex& x2)
 		}
 
 		symbol xtemp("xtemp");
-		ex res = 1;	
-		
+		ex res = 1;
+
 		// ensure that the realpart of the argument is positive
 		if (cln::realpart(x) < 0) {
 			x = -x;
@@ -3220,9 +3220,9 @@ static ex H_evalf(const ex& x1, const ex& x2)
 			}
 			return res.subs(xtemp == numeric(x)).evalf();
 		}
-		
+
 		// check transformations for 0.95 <= |x| < 2.0
-		
+
 		// |(1-x)/(1+x)| < 0.9 -> circular area with center=9.53+0i and radius=9.47
 		if (cln::abs(x-9.53) <= 9.47) {
 			// x -> (1-x)/(1+x)
@@ -3428,7 +3428,7 @@ REGISTER_FUNCTION(H,
                   series_func(H_series).
                   derivative_func(H_deriv).
                   print_func<print_latex>(H_print_latex).
-                  do_not_evalf_params());
+                  do_not_evalf_params())
 
 
 // takes a parameter list for H and returns an expression with corresponding multiple polylogarithms
@@ -3530,7 +3530,7 @@ static void calc_f(std::vector<std::vector<cln::cl_N> >& f_kj,
 	int i, j, k;
 	std::vector<std::vector<cln::cl_N> >::iterator it = f_kj.begin();
 	cln::cl_F one = cln::cl_float(1, cln::float_format(Digits));
-	
+
 	t0 = cln::exp(-lambda);
 	t2 = 1;
 	for (k=1; k<=L1; k++) {
@@ -3556,7 +3556,7 @@ static cln::cl_N crandall_Z(const std::vector<int>& s,
 {
 	const int j = s.size();
 
-	if (j == 1) {	
+	if (j == 1) {
 		cln::cl_N t0;
 		cln::cl_N t0buf;
 		int q = 0;
@@ -3565,7 +3565,7 @@ static cln::cl_N crandall_Z(const std::vector<int>& s,
 			q++;
 			t0 = t0 + f_kj[q+j-2][s[0]-1];
 		} while (t0 != t0buf);
-		
+
 		return t0 / cln::factorial(s[0]-1);
 	}
 
@@ -3582,7 +3582,7 @@ static cln::cl_N crandall_Z(const std::vector<int>& s,
 		}
 		t[0] = t[0] + t[1] * f_kj[q+j-2][s[0]-1];
 	} while (t[0] != t0buf);
-	
+
 	return t[0] / cln::factorial(s[0]-1);
 }
 
@@ -3646,14 +3646,14 @@ cln::cl_N zeta_do_sum_Crandall(const std::vector<int>& s)
 
 		std::vector<cln::cl_N> crX;
 		initcX(crX, r, L2);
-		
+
 		for (int q=0; q<skp1buf; q++) {
-			
+
 			cln::cl_N pp1 = crandall_Y_loop(Srun+q-k, crX);
 			cln::cl_N pp2 = crandall_Z(rz, f_kj);
 
 			rz.front()--;
-			
+
 			if (q & 1) {
 				res = res - pp1 * pp2 / cln::factorial(q);
 			} else {

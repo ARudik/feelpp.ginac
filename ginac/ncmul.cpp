@@ -84,7 +84,7 @@ ncmul::ncmul(const exvector & v, bool discardable) : inherited(v,discardable)
 {
 }
 
-ncmul::ncmul(std::auto_ptr<exvector> vp) : inherited(vp)
+ncmul::ncmul(std::shared_ptr<exvector> vp) : inherited(vp)
 {
 }
 
@@ -120,7 +120,7 @@ typedef std::vector<std::size_t> uintvector;
 ex ncmul::expand(unsigned options) const
 {
 	// First, expand the children
-	std::auto_ptr<exvector> vp = expandchildren(options);
+	std::shared_ptr<exvector> vp = expandchildren(options);
 	const exvector &expanded_seq = vp.get() ? *vp : this->seq;
 	
 	// Now, look for all the factors that are sums and remember their
@@ -447,7 +447,7 @@ ex ncmul::eval(int level) const
 ex ncmul::evalm() const
 {
 	// Evaluate children first
-	std::auto_ptr<exvector> s(new exvector);
+	std::shared_ptr<exvector> s(new exvector);
 	s->reserve(seq.size());
 	exvector::const_iterator it = seq.begin(), itend = seq.end();
 	while (it != itend) {
@@ -478,7 +478,7 @@ ex ncmul::thiscontainer(const exvector & v) const
 	return (new ncmul(v))->setflag(status_flags::dynallocated);
 }
 
-ex ncmul::thiscontainer(std::auto_ptr<exvector> vp) const
+ex ncmul::thiscontainer(std::shared_ptr<exvector> vp) const
 {
 	return (new ncmul(vp))->setflag(status_flags::dynallocated);
 }
@@ -596,7 +596,7 @@ return_type_t ncmul::return_type_tinfo() const
 // non-virtual functions in this class
 //////////
 
-std::auto_ptr<exvector> ncmul::expandchildren(unsigned options) const
+std::shared_ptr<exvector> ncmul::expandchildren(unsigned options) const
 {
 	const_iterator cit = this->seq.begin(), end = this->seq.end();
 	while (cit != end) {
@@ -604,7 +604,7 @@ std::auto_ptr<exvector> ncmul::expandchildren(unsigned options) const
 		if (!are_ex_trivially_equal(*cit, expanded_ex)) {
 
 			// copy first part of seq which hasn't changed
-			std::auto_ptr<exvector> s(new exvector(this->seq.begin(), cit));
+			std::shared_ptr<exvector> s(new exvector(this->seq.begin(), cit));
 			reserve(*s, this->seq.size());
 
 			// insert changed element
@@ -623,7 +623,7 @@ std::auto_ptr<exvector> ncmul::expandchildren(unsigned options) const
 		++cit;
 	}
 
-	return std::auto_ptr<exvector>(0); // nothing has changed
+	return std::shared_ptr<exvector>(0); // nothing has changed
 }
 
 const exvector & ncmul::get_factors() const

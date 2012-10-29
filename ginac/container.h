@@ -152,7 +152,7 @@ public:
 			this->seq = s;
 	}
 
-	explicit container(std::auto_ptr<STLT> vp)
+	explicit container(std::shared_ptr<STLT> vp)
 	{
 		setflag(get_default_flags());
 		this->seq.swap(*vp);
@@ -451,7 +451,7 @@ protected:
 
 	/** Similar to duplicate(), but with a preset sequence (which gets
 	 *  deleted). Must be overridden by derived classes. */
-	virtual ex thiscontainer(std::auto_ptr<STLT> vp) const { return container(vp); }
+	virtual ex thiscontainer(std::shared_ptr<STLT> vp) const { return container(vp); }
 
 	virtual void printseq(const print_context & c, char openbracket, char delim,
 	                      char closebracket, unsigned this_precedence,
@@ -495,7 +495,7 @@ protected:
 	void do_print_python(const print_python & c, unsigned level) const;
 	void do_print_python_repr(const print_python_repr & c, unsigned level) const;
 	STLT evalchildren(int level) const;
-	std::auto_ptr<STLT> subschildren(const exmap & m, unsigned options = 0) const;
+	std::shared_ptr<STLT> subschildren(const exmap & m, unsigned options = 0) const;
 };
 
 /** Default constructor */
@@ -582,7 +582,7 @@ ex container<C>::subs(const exmap & m, unsigned options) const
 	// f(x).subs(x==f^-1(x))
 	//   -> f(f^-1(x))  [subschildren]
 	//   -> x           [eval]   /* must not subs(x==f^-1(x))! */
-	std::auto_ptr<STLT> vp = subschildren(m, options);
+	std::shared_ptr<STLT> vp = subschildren(m, options);
 	if (vp.get()) {
 		ex result(thiscontainer(vp));
 		if (is_a<container<C> >(result))
@@ -751,7 +751,7 @@ typename container<C>::STLT container<C>::evalchildren(int level) const
 }
 
 template <template <class T, class = std::allocator<T> > class C>
-std::auto_ptr<typename container<C>::STLT> container<C>::subschildren(const exmap & m, unsigned options) const
+std::shared_ptr<typename container<C>::STLT> container<C>::subschildren(const exmap & m, unsigned options) const
 {
 	// returns a NULL pointer if nothing had to be substituted
 	// returns a pointer to a newly created STLT otherwise
@@ -763,7 +763,7 @@ std::auto_ptr<typename container<C>::STLT> container<C>::subschildren(const exma
 		if (!are_ex_trivially_equal(*cit, subsed_ex)) {
 
 			// copy first part of seq which hasn't changed
-			std::auto_ptr<STLT> s(new STLT(this->seq.begin(), cit));
+			std::shared_ptr<STLT> s(new STLT(this->seq.begin(), cit));
 			this->reserve(*s, this->seq.size());
 
 			// insert changed element
@@ -782,7 +782,7 @@ std::auto_ptr<typename container<C>::STLT> container<C>::subschildren(const exma
 		++cit;
 	}
 	
-	return std::auto_ptr<STLT>(0); // nothing has changed
+	return std::shared_ptr<STLT>(0); // nothing has changed
 }
 
 } // namespace GiNaC

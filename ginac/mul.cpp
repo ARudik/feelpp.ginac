@@ -89,7 +89,7 @@ mul::mul(const epvector & v, const ex & oc, bool do_index_renaming)
 	GINAC_ASSERT(is_canonical());
 }
 
-mul::mul(std::auto_ptr<epvector> vp, const ex & oc, bool do_index_renaming)
+mul::mul(std::shared_ptr<epvector> vp, const ex & oc, bool do_index_renaming)
 {
 	GINAC_ASSERT(vp.get()!=0);
 	overall_coeff = oc;
@@ -441,7 +441,7 @@ ex mul::coeff(const ex & s, int n) const
  *  @param level cut-off in recursive evaluation */
 ex mul::eval(int level) const
 {
-	std::auto_ptr<epvector> evaled_seqp = evalchildren(level);
+	std::shared_ptr<epvector> evaled_seqp = evalchildren(level);
 	if (evaled_seqp.get()) {
 		// do more evaluation later
 		return (new mul(evaled_seqp, overall_coeff))->
@@ -469,7 +469,7 @@ ex mul::eval(int level) const
 	           ex_to<numeric>((*seq.begin()).coeff).is_equal(*_num1_p)) {
 		// *(+(x,y,...);c) -> +(*(x,c),*(y,c),...) (c numeric(), no powers of +())
 		const add & addref = ex_to<add>((*seq.begin()).rest);
-		std::auto_ptr<epvector> distrseq(new epvector);
+		std::shared_ptr<epvector> distrseq(new epvector);
 		distrseq->reserve(addref.seq.size());
 		epvector::const_iterator i = addref.seq.begin(), end = addref.seq.end();
 		while (i != end) {
@@ -487,7 +487,7 @@ ex mul::eval(int level) const
 		epvector::const_iterator last = seq.end();
 		epvector::const_iterator i = seq.begin();
 		epvector::const_iterator j = seq.begin();
-		std::auto_ptr<epvector> s(new epvector);
+		std::shared_ptr<epvector> s(new epvector);
 		numeric oc = *_num1_p;
 		bool something_changed = false;
 		while (i!=last) {
@@ -563,7 +563,7 @@ ex mul::evalf(int level) const
 	if (level==-max_recursion_level)
 		throw(std::runtime_error("max recursion level reached"));
 	
-	std::auto_ptr<epvector> s(new epvector);
+	std::shared_ptr<epvector> s(new epvector);
 	s->reserve(seq.size());
 
 	--level;
@@ -621,7 +621,7 @@ ex mul::evalm() const
 	// Evaluate children first, look whether there are any matrices at all
 	// (there can be either no matrices or one matrix; if there were more
 	// than one matrix, it would be a non-commutative product)
-	std::auto_ptr<epvector> s(new epvector);
+	std::shared_ptr<epvector> s(new epvector);
 	s->reserve(seq.size());
 
 	bool have_matrix = false;
@@ -939,7 +939,7 @@ ex mul::thisexpairseq(const epvector & v, const ex & oc, bool do_index_renaming)
 	return (new mul(v, oc, do_index_renaming))->setflag(status_flags::dynallocated);
 }
 
-ex mul::thisexpairseq(std::auto_ptr<epvector> vp, const ex & oc, bool do_index_renaming) const
+ex mul::thisexpairseq(std::shared_ptr<epvector> vp, const ex & oc, bool do_index_renaming) const
 {
 	return (new mul(vp, oc, do_index_renaming))->setflag(status_flags::dynallocated);
 }
@@ -1075,7 +1075,7 @@ ex mul::expand(unsigned options) const
 	const bool skip_idx_rename = !(options & expand_options::expand_rename_idx);
 
 	// First, expand the children
-	std::auto_ptr<epvector> expanded_seqp = expandchildren(options);
+	std::shared_ptr<epvector> expanded_seqp = expandchildren(options);
 	const epvector & expanded_seq = (expanded_seqp.get() ? *expanded_seqp : seq);
 
 	// Now, look for all the factors that are sums and multiply each one out
@@ -1243,7 +1243,7 @@ ex mul::expand(unsigned options) const
  *  @see mul::expand()
  *  @return pointer to epvector containing expanded representation or zero
  *  pointer, if sequence is unchanged. */
-std::auto_ptr<epvector> mul::expandchildren(unsigned options) const
+std::shared_ptr<epvector> mul::expandchildren(unsigned options) const
 {
 	const epvector::const_iterator last = seq.end();
 	epvector::const_iterator cit = seq.begin();
@@ -1253,7 +1253,7 @@ std::auto_ptr<epvector> mul::expandchildren(unsigned options) const
 		if (!are_ex_trivially_equal(factor,expanded_factor)) {
 			
 			// something changed, copy seq, eval and return it
-			std::auto_ptr<epvector> s(new epvector);
+			std::shared_ptr<epvector> s(new epvector);
 			s->reserve(seq.size());
 			
 			// copy parts of seq which are known not to have changed
@@ -1277,7 +1277,7 @@ std::auto_ptr<epvector> mul::expandchildren(unsigned options) const
 		++cit;
 	}
 	
-	return std::auto_ptr<epvector>(0); // nothing has changed
+	return std::shared_ptr<epvector>(0); // nothing has changed
 }
 
 GINAC_BIND_UNARCHIVER(mul);

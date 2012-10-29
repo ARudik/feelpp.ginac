@@ -90,7 +90,7 @@ color::color(unsigned char rl, const exvector & v, bool discardable) : inherited
 {
 }
 
-color::color(unsigned char rl, std::auto_ptr<exvector> vp) : inherited(not_symmetric(), vp), representation_label(rl)
+color::color(unsigned char rl, std::shared_ptr<exvector> vp) : inherited(not_symmetric(), vp), representation_label(rl)
 {
 }
 
@@ -184,7 +184,7 @@ ex color::thiscontainer(const exvector & v) const
 	return color(representation_label, v);
 }
 
-ex color::thiscontainer(std::auto_ptr<exvector> vp) const
+ex color::thiscontainer(std::shared_ptr<exvector> vp) const
 {
 	return color(representation_label, vp);
 }

@@ -109,7 +109,7 @@ clifford::clifford(unsigned char rl, const ex & metr, int comm_sign, const exvec
 {
 }
 
-clifford::clifford(unsigned char rl, const ex & metr, int comm_sign, std::auto_ptr<exvector> vp) : inherited(not_symmetric(), vp), representation_label(rl), metric(metr), commutator_sign(comm_sign)
+clifford::clifford(unsigned char rl, const ex & metr, int comm_sign, std::shared_ptr<exvector> vp) : inherited(not_symmetric(), vp), representation_label(rl), metric(metr), commutator_sign(comm_sign)
 {
 }
 
@@ -684,7 +684,7 @@ ex clifford::thiscontainer(const exvector & v) const
 	return clifford(representation_label, metric, commutator_sign, v);
 }
 
-ex clifford::thiscontainer(std::auto_ptr<exvector> vp) const
+ex clifford::thiscontainer(std::shared_ptr<exvector> vp) const
 {
 	return clifford(representation_label, metric, commutator_sign, vp);
 }

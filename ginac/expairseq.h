@@ -72,7 +72,7 @@ public:
 	expairseq(const ex & lh, const ex & rh);
 	expairseq(const exvector & v);
 	expairseq(const epvector & v, const ex & oc, bool do_index_renaming = false);
-	expairseq(std::auto_ptr<epvector>, const ex & oc, bool do_index_renaming = false);
+	expairseq(std::shared_ptr<epvector>, const ex & oc, bool do_index_renaming = false);
 	
 	// functions overriding virtual functions from base classes
 public:
@@ -99,7 +99,7 @@ protected:
 	// new virtual functions which can be overridden by derived classes
 protected:
 	virtual ex thisexpairseq(const epvector & v, const ex & oc, bool do_index_renaming = false) const;
-	virtual ex thisexpairseq(std::auto_ptr<epvector> vp, const ex & oc, bool do_index_renaming = false) const;
+	virtual ex thisexpairseq(std::shared_ptr<epvector> vp, const ex & oc, bool do_index_renaming = false) const;
 	virtual void printseq(const print_context & c, char delim,
 	                      unsigned this_precedence,
 	                      unsigned upper_precedence) const;
@@ -155,9 +155,9 @@ protected:
 	                             epvector::const_iterator last_non_zero);
 #endif // EXPAIRSEQ_USE_HASHTAB
 	bool is_canonical() const;
-	std::auto_ptr<epvector> expandchildren(unsigned options) const;
-	std::auto_ptr<epvector> evalchildren(int level) const;
-	std::auto_ptr<epvector> subschildren(const exmap & m, unsigned options = 0) const;
+	std::shared_ptr<epvector> expandchildren(unsigned options) const;
+	std::shared_ptr<epvector> evalchildren(int level) const;
+	std::shared_ptr<epvector> subschildren(const exmap & m, unsigned options = 0) const;
 	
 // member variables
 	
