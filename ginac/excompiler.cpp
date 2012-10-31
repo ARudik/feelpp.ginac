@@ -29,6 +29,9 @@
 #include "config.h"
 #endif
 
+#include <boost/mpi.hpp>
+#include <boost/lexical_cast.hpp>
+
 #include "ex.h"
 #include "lst.h"
 #include "operators.h"
@@ -48,7 +51,7 @@
 namespace GiNaC {
 
 #ifdef HAVE_LIBDL
-	
+
 /**
  * Small class that manages modules opened by libdl. It is used by compile_ex
  * and link_ex in order to have a clean-up of opened modules and their
@@ -123,7 +126,7 @@ public:
 			// use parameter as filename
 			ofs.open(filename.c_str(), std::ios::out);
 		}
-		
+
 		if (!ofs) {
 			throw std::runtime_error("could not create source code file for compilation");
 		}
@@ -141,9 +144,16 @@ public:
 	void compile_src_file(const std::string filename, bool clean_up)
 	{
 		std::string strcompile = "ginac-excompiler " + filename;
-		if (system(strcompile.c_str())) {
-			throw std::runtime_error("excompiler::compile_src_file: error compiling source file!");
+		if (system(strcompile.c_str()))
+		{
+			// try the compiler in Feel++ source
+			strcompile = "/scratch/prudhomm/release.gcc46/contrib/ginac/tools/ginac-excompiler " + filename;
+			if (system(strcompile.c_str()))
+			{
+				throw std::runtime_error("excompiler::compile_src_file: error compiling source file!");
+			}
 		}
+
 		if (clean_up) {
 			remove(filename.c_str());
 		}
@@ -244,6 +254,7 @@ void compile_ex(const ex& expr, const symbol& sym1, const symbol& sym2, FUNCP_2P
 
 void compile_ex(const lst& exprs, const lst& syms, FUNCP_CUBA& fp, const std::string filename)
 {
+	boost::mpi::communicator world;
 	lst replacements;
 	for (std::size_t count=0; count<syms.nops(); ++count) {
 		std::ostringstream s;
@@ -257,7 +268,7 @@ void compile_ex(const lst& exprs, const lst& syms, FUNCP_CUBA& fp, const std::st
 	}
 
 	std::ofstream ofs;
-	std::string unique_filename = filename;
+	std::string unique_filename = filename+boost::lexical_cast<std::string>(world.rank());
 	global_excompiler.create_src_file(unique_filename, ofs);
 
 	ofs << "void compiled_ex(const int* an, const double a[], const int* fn, double f[])" << std::endl;

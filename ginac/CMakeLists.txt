@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
+configure_file( excompiler.cpp.in ${CMAKE_CURRENT_SOURCE_DIR}/excompiler.cpp)
+
 set(ginaclib_sources
     add.cpp
     archive.cpp
